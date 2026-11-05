@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quality Attributes & Architectural Tactics Presentation</title>
+  <style>
+    @page {
+      size: 297mm 210mm;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .slide {
+      width: 297mm;
+      height: 210mm;
+      max-height: 210mm;
+      padding: 14mm 18mm 12mm 18mm;
+      position: relative;
+      background: #ffffff;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .slide-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-num {
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .slide-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+
+    .slide-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-core { background: #dbeafe; color: #1d4ed8; }
+    .badge-demo { background: #dcfce7; color: #15803d; }
+    .badge-theory { background: #fef3c7; color: #b45309; }
+    .badge-matrix { background: #f3e8ff; color: #7e22ce; }
+
+    /* Content Area */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .lead-box {
+      background: #f8fafc;
+      border-left: 4px solid #2563eb;
+      padding: 8px 14px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.45;
+    }
+
+    .lead-box strong {
+      color: #0f172a;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+    }
+
+    .card-title .icon {
+      color: #2563eb;
+      font-size: 14px;
+    }
+
+    ul.point-list {
+      list-style: none;
+      font-size: 11.5px;
+      color: #334155;
+      line-height: 1.45;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    ul.point-list li {
+      position: relative;
+      padding-left: 14px;
+    }
+
+    ul.point-list li::before {
+      content: "•";
+      position: absolute;
+      left: 2px;
+      color: #2563eb;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    ul.point-list li strong {
+      color: #0f172a;
+    }
+
+    /* Scenario Box (SEI 6-part) */
+    .scenario-container {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .scenario-header {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+
+    .scenario-cell {
+      background: #f1f5f9;
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: 10.5px;
+      line-height: 1.35;
+    }
+
+    .scenario-cell .label {
+      font-weight: 800;
+      color: #2563eb;
+      font-size: 9.5px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* Demo Table Box */
+    .demo-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    .demo-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      background: #ffffff;
+    }
+
+    table.data-table th, table.data-table td {
+      padding: 5px 8px;
+      border: 1px solid #cbd5e1;
+      text-align: left;
+    }
+
+    table.data-table th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .text-danger { color: #dc2626; font-weight: 700; }
+    .text-success { color: #16a34a; font-weight: 700; }
+    .text-primary { color: #2563eb; font-weight: 700; }
+
+    /* Footer */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: #94a3b8;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+
+    /* Cover Slide Specific */
+    .cover-slide {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 30mm;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.3);
+      border: 1px solid rgba(147, 197, 253, 0.4);
+      color: #93c5fd;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .cover-title {
+      font-size: 34px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .cover-title span {
+      color: #60a5fa;
+    }
+
+    .cover-subtitle {
+      font-size: 16px;
+      color: #cbd5e1;
+      max-width: 220mm;
+      line-height: 1.5;
+      margin-bottom: 30px;
+    }
+
+    .cover-meta {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      font-size: 12px;
+      color: #94a3b8;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+      width: 100%;
+    }
+
+    .cover-meta-item strong {
+      color: #f8fafc;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background: #e2e8f0;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 10.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SLIDE 1: COVER ==================== -->
+  <div class="slide cover-slide">
+    <div class="cover-badge">KIẾN TRÚC PHẦN MỀM (SEI & ISO 25010)</div>
+    <h1 class="cover-title">QUALITY ATTRIBUTES &amp; <span>ARCHITECTURAL TACTICS</span></h1>
+    <p class="cover-subtitle">Phân tích hệ thống đặc tính chất lượng, kịch bản đặc tả chuẩn SEI 6 thành phần và thực chứng trên Microservices Demo (Google Online Boutique)</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <strong>Bộ môn / Trường</strong>
+        Khoa CNTT - ĐH Khoa học Tự nhiên (HCMUS)
+      </div>
+      <div class="cover-meta-item">
+        <strong>Giáo trình tham chiếu</strong>
+        Software Architecture in Practice (Bass, Clements, Kazman)
+      </div>
+      <div class="cover-meta-item">
+        <strong>Trọng tâm thực hành</strong>
+        Demo Scalability (K6 Load Test) &amp; Security Audit
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 2: OVERVIEW & SCENARIO SPECIFICATION ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">01</span>
+        <h2 class="slide-title">Tổng Quan Quality Attributes &amp; Kịch Bản Chuẩn SEI</h2>
+      </div>
+      <span class="slide-badge badge-core">Nền tảng kiến trúc</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Bản chất cốt lõi:</strong> Tính năng chức năng (<em>Functionality</em>) không định hình nên cấu trúc kiến trúc; nếu chỉ cần chức năng, một khối mã nguồn duy nhất (Monolithic blob) là đủ. <strong>Chính các thuộc tính chất lượng (Quality Attributes)</strong> — hiệu năng, an ninh, độ sẵn sàng, khả năng mở rộng — mới quyết định việc chia tách module, lựa chọn pattern và hạ tầng triển khai.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">📐</span> Vai Trò Trong Đánh Giá Kiến Trúc (ATAM)</div>
+          <ul class="point-list">
+            <li><strong>Đặc tả phi chức năng định lượng:</strong> Tránh các mô tả mơ hồ như "hệ thống phải nhanh" hoặc "hệ thống phải bảo mật cao".</li>
+            <li><strong>Cơ sở lựa chọn Tactics:</strong> Mỗi đặc tính chất lượng được hiện thực hóa thông qua các quyết định kiến trúc cụ thể (Tactics).</li>
+            <li><strong>Phát hiện Trade-offs:</strong> Không thể tối ưu đồng thời mọi đặc tính; kiến trúc là nghệ thuật cân bằng sự đánh đổi.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🎯</span> Khung Đo Lường &amp; Chuẩn Đánh Giá</div>
+          <ul class="point-list">
+            <li><strong>Mô hình SEI / ATAM:</strong> Phân tích phản hồi của kiến trúc trước kích thích từ môi trường.</li>
+            <li><strong>Mô hình ISO/IEC 25010:</strong> Hệ thống hóa 8 đặc tính chất lượng của sản phẩm phần mềm.</li>
+            <li><strong>Kịch bản đặc tả (Scenario):</strong> Công cụ giao tiếp duy nhất giữa các Stakeholder và Kiến trúc sư.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario-container">
+        <div class="scenario-header">Cấu trúc 6 thành phần chuẩn SEI để đặc tả Quality Attribute Scenario</div>
+        <div class="scenario-grid">
+          <div class="scenario-cell">
+            <span class="label">1. Stimulus Source</span>
+            Tác nhân sinh kích thích (User, Attacker, Timer, Failure).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">2. Stimulus</span>
+            Điều kiện hoặc sự kiện tác động vào hệ thống (Request tăng vọt, Node crash).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">3. Artifact</span>
+            Bộ phận kiến trúc chịu tác động (Frontend, Database, Message Queue).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">4. Environment</span>
+            Trạng thái lúc xảy ra kích thích (Bình thường, Quá tải, Đang triển khai).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">5. Response</span>
+            Hành vi phản hồi của kiến trúc (Scale instance, Cô lập lỗi, Chặn token).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">6. Response Measure</span>
+            Chỉ số đo lường kết quả (p95 &lt; 1.5s, Uptime 99.9%, 0 data loss).
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 2 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 3: SCALABILITY & DEMO ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">02</span>
+        <h2 class="slide-title">Scalability (Khả Năng Mở Rộng) &amp; Demo Thực Tế</h2>
+      </div>
+      <span class="slide-badge badge-demo">★ Trọng tâm Demo</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Định nghĩa:</strong> Khả năng duy trì hoặc tăng năng lực phục vụ (throughput, latency ổn định) khi tải gia tăng bằng cách bổ sung tài nguyên phần cứng (CPU, Memory, Node) mà không cần cấu trúc lại mã nguồn.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">⚙️</span> Architectural Tactics Đạt Scalability</div>
+          <ul class="point-list">
+            <li><strong>Scale-out (Horizontal Scaling):</strong> Nhân bản microservice stateless qua Load Balancer (Nginx, Kube-proxy).</li>
+            <li><strong>State Decoupling:</strong> Đưa session/state ra Distributed Cache (Redis) để backend hoàn toàn không trạng thái.</li>
+            <li><strong>Database Read-Replication:</strong> Tách tải truy vấn Đọc (CQRS) giảm áp lực cho master database.</li>
+            <li><strong>Asynchronous Decoupling:</strong> Hàng đợi Message Queue làm buffer đệm đỉnh tải.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">📊</span> Chỉ Số Đo Lường &amp; Công Cụ Test</div>
+          <ul class="point-list">
+            <li><strong>Throughput (RPS):</strong> Lượng request hoàn thành hợp lệ trên 1 đơn vị thời gian.</li>
+            <li><strong>Tail Latency p(95) / p(99):</strong> Độ trễ của nhóm request chậm nhất khi chịu tải cao.</li>
+            <li><strong>Error Rate under Stress:</strong> Tỉ lệ request bị timeout hoặc HTTP 5xx.</li>
+            <li><strong>Công cụ kiểm thử:</strong> <code>k6</code> (Constant Arrival Rate), <code>Locust</code>, <code>JMeter</code>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-box">
+        <div class="demo-title"><span>🚀</span> DỮ LIỆU THỰC CHỨNG TRÊN GOOGLE ONLINE BOUTIQUE (350 req/s cố định trong 20s = 7,000 reqs)</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cấu hình thử nghiệm</th>
+              <th>Tổng Request xử lý</th>
+              <th>Thành công (HTTP 200)</th>
+              <th>Thất bại (Timeout > 1.5s)</th>
+              <th>Độ trễ p(95)</th>
+              <th>Kết luận kiến trúc</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 Replica Frontend</strong> (0.25 CPU)</td>
+              <td>5,317 reqs</td>
+              <td class="text-danger">228 reqs (4.28%)</td>
+              <td class="text-danger">5,089 reqs (95.71%)</td>
+              <td class="text-danger">> 1.50s (Nghẽn)</td>
+              <td>CPU kiệt quệ, vỡ hàng đợi TCP socket</td>
+            </tr>
+            <tr>
+              <td><strong>3 Replicas Frontend</strong> (Nginx Balancer)</td>
+              <td>6,506 reqs</td>
+              <td class="text-success">6,494 reqs (99.81%)</td>
+              <td class="text-success">12 reqs (0.18%)</td>
+              <td class="text-success">1.33s (&lt; 1.5s)</td>
+              <td class="text-primary">Tải phân bổ đều 1/3, SLA đạt chuẩn 99.8%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 3 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 4: SECURITY & AUDIT ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">03</span>
+        <h2 class="slide-title">Security (An Ninh &amp; Bảo Mật) &amp; Kết Quả Audit</h2>
+      </div>
+      <span class="slide-badge badge-demo">★ Trọng tâm Demo</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Định nghĩa:</strong> Khả năng bảo vệ tài sản thông tin chống lại truy cập, sửa đổi, phá hoại trái phép (tam giác CIA: Confidentiality, Integrity, Availability), đồng thời đảm bảo quyền truy cập cho người dùng hợp lệ.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">🛡️</span> Architectural Tactics (SEI Standard)</div>
+          <ul class="point-list">
+            <li><strong>Detect Attacks:</strong> Kiểm tra tính toàn vẹn thông điệp, IDS/WAF phát hiện brute-force.</li>
+            <li><strong>Resist Attacks:</strong> Xác thực (JWT/OAuth2), Phân quyền (RBAC/ABAC), Mã hóa at-rest (AES-256) và in-transit (mTLS).</li>
+            <li><strong>React to Attacks:</strong> Thu hồi phiên (Session revocation), Khóa tài khoản, Rate limiting.</li>
+            <li><strong>Recover:</strong> Khôi phục dữ liệu từ audit trail, đảm bảo tính chống chối bỏ (Nonrepudiation).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🔍</span> Phương Pháp &amp; Công Cụ Kiểm Thử</div>
+          <ul class="point-list">
+            <li><strong>SAST (Static Analysis):</strong> Rà soát lỗ hổng mã nguồn (Semgrep, SonarQube).</li>
+            <li><strong>SCA (Software Composition Analysis):</strong> Quét thư viện phụ thuộc (Trivy, Snyk).</li>
+            <li><strong>DAST (Dynamic Analysis):</strong> Kiểm thử hộp đen lúc ứng dụng chạy (OWASP ZAP).</li>
+            <li><strong>Metrics:</strong> Số lượng CVE theo chuẩn CVSS (Critical/High), MTTD, MTTP.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-box" style="background: #fff7ed; border-color: #ffedd5;">
+        <div class="demo-title" style="color: #c2410c;"><span>⚠️</span> CÁC LỖ HỔNG AUDIT TRỰC TIẾP TRÊN MÃ NGUỒN GOOGLE ONLINE BOUTIQUE</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Mã lỗi &amp; Chuẩn CWE</th>
+              <th>Vị trí mã nguồn lỗi</th>
+              <th>Rủi ro bảo mật thực tế</th>
+              <th>Giải pháp khắc phục kiến trúc</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CWE-614 / CWE-1004</strong></td>
+              <td><code>frontend/middleware.go:97</code></td>
+              <td>Cookie session thiếu <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite</code> (XSS cướp session)</td>
+              <td>Bắt buộc gán đủ flags bảo vệ cookie trong middleware</td>
+            </tr>
+            <tr>
+              <td><strong>CWE-352 (No CSRF)</strong></td>
+              <td><code>frontend/handlers.go:211</code></td>
+              <td>Endpoint <code>POST /cart</code> và checkout không có Anti-CSRF token</td>
+              <td>Tích hợp CSRF token middleware (như <code>gorilla/csrf</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>CWE-601 (Open Redirect)</strong></td>
+              <td><code>frontend/handlers.go:521</code></td>
+              <td>Redirect trực tiếp qua Header <code>Referer</code> không kiểm duyệt whitelist domain</td>
+              <td>Validate whitelist domain trước khi gán header <code>Location</code></td>
+            </tr>
+            <tr>
+              <td><strong>CWE-319 / PCI-DSS</strong></td>
+              <td><code>frontend/main.go:230</code></td>
+              <td>gRPC nội bộ chạy <code>insecure.NewCredentials()</code>, thẻ tín dụng truyền plaintext</td>
+              <td>Thiết lập Zero-Trust mTLS giữa các microservices</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 4 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 5: AVAILABILITY ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">04</span>
+        <h2 class="slide-title">Availability (Độ Sẵn Sàng &amp; Chống Chịu Sự Cố)</h2>
+      </div>
+      <span class="slide-badge badge-theory">Lý thuyết vấn đáp</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Định nghĩa:</strong> Tỉ lệ thời gian hệ thống vận hành đúng chức năng và sẵn sàng phục vụ khi được yêu cầu. Phân biệt: <em>Fault</em> (khiếm khuyết/sự cố nội bộ) nếu không được cô lập và xử lý sẽ chuyển hóa thành <em>Failure</em> (sụp đổ toàn hệ thống).
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title"><span class="icon">🔍</span> Phát Hiện Lỗi (Detect Faults)</div>
+          <ul class="point-list">
+            <li><strong>Ping / Echo:</strong> Kiểm tra liveness định kỳ qua giao thức mạng.</li>
+            <li><strong>Heartbeat:</strong> Node chủ động gửi thông điệp sống còn về orchestrator.</li>
+            <li><strong>Kubernetes Probes:</strong> Liveness probe (tự kill pod treo), Readiness probe (dừng cấp tải pod chưa sẵn sàng).</li>
+            <li><strong>Timeout Detection:</strong> Ngắt kết nối sớm khi dịch vụ phụ thuộc không trả lời.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🔄</span> Phục Hồi Lỗi (Recover)</div>
+          <ul class="point-list">
+            <li><strong>Active Redundancy (Hot Spare):</strong> Nhiều node chạy đồng thời, cùng nhận tải (Zero downtime failover).</li>
+            <li><strong>Passive Redundancy (Warm/Cold):</strong> Node dự phòng khởi động thay thế khi node chính sập.</li>
+            <li><strong>Exponential Backoff Retry:</strong> Thử lại có độ trễ lũy tiến tránh làm chết thêm downstream.</li>
+            <li><strong>Graceful Degradation:</strong> Trả về dữ liệu fallback khi service con chết (ví dụ: giỏ hàng trống).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🛑</span> Ngăn Ngừa Lỗi (Prevent)</div>
+          <ul class="point-list">
+            <li><strong>Circuit Breaker:</strong> Ngắt ngay lập tức các request tới service đang bị lỗi, chống domino failure.</li>
+            <li><strong>Transactions &amp; Rollback:</strong> Đảm bảo tính toàn vẹn dữ liệu ACID hoặc Sagas.</li>
+            <li><strong>Removal from Service:</strong> Tự động loại bỏ node lỗi ra khỏi cụm trước khi người dùng gặp lỗi.</li>
+            <li><strong>Rate Limiting / Throttling:</strong> Giữ tải hệ thống dưới ngưỡng sập.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario-container">
+        <div class="scenario-header">Scenario Mẫu: Thanh Toán Khi Recommendation Service Sập</div>
+        <div class="scenario-grid">
+          <div class="scenario-cell">
+            <span class="label">Stimulus Source</span>
+            Recommendation pod bị crash do Out Of Memory (OOM).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Stimulus</span>
+            Hàng nghìn request thanh toán giỏ hàng gửi đến Frontend.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Artifact</span>
+            Frontend và Cart Service.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Environment</span>
+            Vận hành bình thường trong giờ cao điểm.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Response</span>
+            Circuit breaker ngắt gọi Ad/Recommend, fallback giao diện tối giản.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Response Measure</span>
+            Luồng thanh toán hoàn tất 100%, uptime duy trì 99.99%.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 5 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 6: PERFORMANCE ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">05</span>
+        <h2 class="slide-title">Performance (Hiệu Năng &amp; Đáp Ứng Thời Gian)</h2>
+      </div>
+      <span class="slide-badge badge-theory">Lý thuyết vấn đáp</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Định nghĩa:</strong> Khả năng của hệ thống đáp ứng các ràng buộc về thời gian (timing constraints) khi xử lý các kích thích đầu vào. Phân biệt rõ: <strong>Performance</strong> là độ trễ/tốc độ ở một mức tải nhất định; <strong>Scalability</strong> là khả năng duy trì Performance khi tải gia tăng liên tục.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">🎛️</span> Tactic: Kiểm Soát Nhu Cầu (Control Demand)</div>
+          <ul class="point-list">
+            <li><strong>Manage Sampling Rate:</strong> Giảm tần suất gửi sự kiện sensor/telemetry không cần thiết.</li>
+            <li><strong>Event Prioritization:</strong> Sử dụng hàng đợi ưu tiên (Priority Queue) để tác vụ khẩn cấp (thanh toán) được xử lý trước tác vụ phụ (gửi email).</li>
+            <li><strong>Reduce Communication Overhead:</strong> Thay thế chuẩn JSON/HTTP/1.1 cồng kềnh bằng giao thức nhị phân gRPC/Protobuf trên HTTP/2.</li>
+            <li><strong>Bound Queue Sizes:</strong> Giới hạn độ dài hàng đợi tránh làm đầy bộ nhớ (OOM) khi tắc nghẽn.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">⚡</span> Tactic: Quản Lý Tài Nguyên (Manage Resources)</div>
+          <ul class="point-list">
+            <li><strong>Non-blocking Asynchronous I/O:</strong> Dùng Event loop, Goroutines, Reactive streams tránh nghẽn thread.</li>
+            <li><strong>Multi-layer Caching:</strong> Cache tại RAM (In-memory), Cache phân tán (Redis), Cache biên (CDN cho ảnh/tệp tĩnh).</li>
+            <li><strong>Data Replication / Read Replicas:</strong> Nhân bản dữ liệu đọc gần máy chủ xử lý logic.</li>
+            <li><strong>Connection Pooling:</strong> Tái sử dụng TCP socket và Database Connection (keep-alive) tránh bắt tay 3 bước lặp lại.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="background: #ffffff;">
+        <div class="card-title"><span class="icon">📊</span> Các Chỉ Số Đo Lường Cốt Lõi Cần Nắm Chắc Khi Trả Lời Vấn Đáp</div>
+        <div class="grid-3" style="font-size: 11px;">
+          <div>
+            <strong>1. Latency vs. Throughput:</strong><br>
+            • <em>Latency:</em> Thời gian phản hồi 1 request (ms).<br>
+            • <em>Throughput:</em> Số lượng tác vụ hoàn thành / giây (RPS, TPS).
+          </div>
+          <div>
+            <strong>2. Percentiles (Tail Latency):</strong><br>
+            • <em>Average:</em> Thường bị bóp méo bởi số ngoại lai.<br>
+            • <em>p(95), p(99):</em> Chuẩn công nghiệp phản ánh trải nghiệm của 1-5% người dùng chậm nhất.
+          </div>
+          <div>
+            <strong>3. Resource Saturation:</strong><br>
+            • % CPU, RAM, Disk I/O, Network bandwidth.<br>
+            • Định luật Amdahl: Giới hạn tăng tốc khi song song hóa logic tuần tự.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 6 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 7: MODIFIABILITY ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">06</span>
+        <h2 class="slide-title">Modifiability (Khả Năng Sửa Đổi &amp; Bảo Trì)</h2>
+      </div>
+      <span class="slide-badge badge-theory">Lý thuyết vấn đáp</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Định nghĩa:</strong> Chi phí, thời gian và mức độ rủi ro khi thực hiện các thay đổi đối với hệ thống phần mềm (sửa lỗi, nâng cấp công nghệ, bổ sung chức năng mới) mà không làm ảnh hưởng tiêu cực đến các chức năng hiện tại.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">🧩</span> Tactics Giảm Chi Phí Thay Đổi (SEI)</div>
+          <ul class="point-list">
+            <li><strong>Reduce Size of Module:</strong> Chia nhỏ module theo nguyên lý Đơn trách nhiệm (Single Responsibility Principle - SRP).</li>
+            <li><strong>Increase Cohesion:</strong> Đảm bảo các thành phần bên trong module phục vụ cùng một mục đích nghiệp vụ thống nhất.</li>
+            <li><strong>Reduce Coupling:</strong>
+              • Đóng gói qua Interface và Dependency Injection (Inversion of Control).<br>
+              • Dùng cấu trúc trung gian (Intermediary / Broker / API Gateway).<br>
+              • Kiến trúc Event-Driven (Publish-Subscribe) loại bỏ phụ thuộc gọi hàm trực tiếp.
+            </li>
+            <li><strong>Defer Binding Time:</strong> Dời thời điểm liên kết mã nguồn sang lúc triển khai: file cấu hình <code>.env</code>, Dynamic Loading, Feature Flags.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">📉</span> Hiệu Ứng Gợn Sóng (Ripple Effect) &amp; Đo Lường</div>
+          <ul class="point-list">
+            <li><strong>Ripple Effect:</strong> Khả năng một thay đổi tại một module dẫn đến chuỗi thay đổi bắt buộc ở các module khác. Kiến trúc tốt phải chặn đứng hiệu ứng này tại ranh giới module.</li>
+            <li><strong>Chỉ số đo lường (Metrics):</strong><br>
+              • <em>Number of affected modules:</em> Số module phải sửa khi có 1 yêu cầu nghiệp vụ mới.<br>
+              • <em>Cyclomatic Complexity (CC):</em> Độ phức tạp luồng điều khiển của hàm/class.<br>
+              • <em>Coupling Between Objects (CBO):</em> Mức độ liên kết giữa các class.<br>
+              • <em>Cost in Person-hours:</em> Số giờ công thực tế để hoàn thành và test một thay đổi.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario-container">
+        <div class="scenario-header">Scenario Mẫu: Tích Hợp Cổng Thanh Toán Mới (Momo/ZaloPay)</div>
+        <div class="scenario-grid">
+          <div class="scenario-cell">
+            <span class="label">Stimulus Source</span>
+            Nhà phát triển / Đội ngũ tích hợp đối tác.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Stimulus</span>
+            Yêu cầu bổ sung thêm phương thức thanh toán ví điện tử mới.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Artifact</span>
+            Payment Service và Checkout Service.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Environment</span>
+            Giai đoạn phát triển mã nguồn (Design time).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Response</span>
+            Chỉ cần implement <code>PaymentGateway</code> Interface mới, cấu hình qua file config.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Response Measure</span>
+            Không sửa đổi code của Checkout service, hoàn thành và kiểm thử dưới 2 ngày công.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 7 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 8: TESTABILITY ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">07</span>
+        <h2 class="slide-title">Testability (Khả Năng Kiểm Thử)</h2>
+      </div>
+      <span class="slide-badge badge-theory">Lý thuyết vấn đáp</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Định nghĩa:</strong> Mức độ dễ dàng mà phần mềm cho phép người kiểm thử thiết kế kịch bản và thực thi nhằm phát hiện lỗi. Một kiến trúc có testability cao là kiến trúc <em>"dễ dàng bộc lộ khuyết tật" (gives up its faults easily)</em> thông qua kiểm tra tự động.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">🧪</span> Tactics Nâng Cao Testability (SEI)</div>
+          <ul class="point-list">
+            <li><strong>Control &amp; Observe System State (Kiểm soát và Quan sát):</strong>
+              • Cung cấp giao diện kiểm thử chuyên biệt (Specialized Test Interfaces / Debug endpoints).<br>
+              • Endpoint reset state database về trạng thái mẫu ban đầu (Fixtures).<br>
+              • Health check endpoints chi tiết tình trạng kết nối Redis/DB (liveness, readiness).
+            </li>
+            <li><strong>Abstract Data Sources (Trừu tượng hóa nguồn dữ liệu):</strong>
+              • Tách biệt Data Access Layer (Repository Pattern) cho phép dễ dàng thay thế bằng Mock/Stub trong Unit Test mà không cần DB thật.
+            </li>
+            <li><strong>Limit Architectural Complexity (Hạn chế độ phức tạp):</strong>
+              • Tránh phụ thuộc vòng (Circular dependencies).<br>
+              • Hạn chế tính bất định (Non-determinism) trong xử lý đồng thời đa luồng.
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">📈</span> Đo Lường &amp; Kim Tự Tháp Kiểm Thử</div>
+          <ul class="point-list">
+            <li><strong>Kim tự tháp kiểm thử (Test Pyramid):</strong>
+              • <em>Unit Test (70%):</em> Nhanh, cô lập, rẻ.<br>
+              • <em>Integration Test (20%):</em> Kiểm tra giao tiếp giữa các microservices (gRPC contracts).<br>
+              • <em>E2E Test (10%):</em> Chậm, tốn kém, kiểm thử toàn luồng người dùng.
+            </li>
+            <li><strong>Chỉ số đánh giá (Metrics):</strong><br>
+              • <em>Code Coverage:</em> Tỉ lệ dòng lệnh (Statement) và nhánh (Branch) được test bao phủ.<br>
+              • <em>Test Suite Execution Time:</em> Thời gian hoàn tất toàn bộ test suite trên CI/CD pipeline (phải dưới 10 phút để phản hồi nhanh).<br>
+              • <em>Fault Isolation:</em> Mức độ dễ dàng định vị lỗi khi một test case bị fail.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario-container">
+        <div class="scenario-header">Scenario Mẫu: Kiểm Thử Độc Lập Cart Service Bằng Mock Redis</div>
+        <div class="scenario-grid">
+          <div class="scenario-cell">
+            <span class="label">Stimulus Source</span>
+            Hệ thống CI/CD pipeline khi có Commit / Pull Request mới.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Stimulus</span>
+            Thực thi bộ Unit &amp; Integration Test tự động.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Artifact</span>
+            Cart Service và Mock <code>ICartStore</code>.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Environment</span>
+            Môi trường container CI cô lập (không có Redis cluster thật).
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Response</span>
+            Mock store tiêm vào service thành công, giả lập đầy đủ các tình huống lỗi mạng.
+          </div>
+          <div class="scenario-cell">
+            <span class="label">Response Measure</span>
+            Branch coverage đạt &gt; 85%, toàn bộ test suite hoàn tất trong dưới 60 giây.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 8 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 9: DEPLOYABILITY & USABILITY ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">08</span>
+        <h2 class="slide-title">Deployability &amp; Usability</h2>
+      </div>
+      <span class="slide-badge badge-theory">Lý thuyết vấn đáp</span>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <!-- Deployability -->
+        <div class="card">
+          <div class="card-title"><span class="icon">🚀</span> 1. Deployability (Khả Năng Triển Khai)</div>
+          <p style="font-size: 11px; color: #475569; margin-bottom: 4px;">Khả năng đưa bản cập nhật phần mềm vào môi trường vận hành thực tế trong thời gian dự đoán được, với công sức tối thiểu và không làm gián đoạn người dùng.</p>
+          <ul class="point-list">
+            <li><strong>Tactics Triển Khai Không Gián Đoạn (Zero-Downtime):</strong><br>
+              • <em>Containerization:</em> Đóng gói đồng nhất qua Docker, loại bỏ lỗi "chạy được trên máy tôi".<br>
+              • <em>Blue-Green Deployment:</em> Duy trì 2 môi trường song song; chuyển hướng traffic router tức thời.<br>
+              • <em>Canary Release:</em> Đẩy phiên bản mới cho 5% người dùng thử nghiệm trước khi mở rộng 100%.<br>
+              • <em>Automated Rollback:</em> Tự động revert bản cũ nếu tỉ lệ lỗi HTTP 5xx tăng vọt.
+            </li>
+            <li><strong>Chỉ số DORA:</strong> Deployment Frequency (tần suất deploy), Lead Time for Changes (thời gian đưa code lên prod), Change Failure Rate.</li>
+          </ul>
+        </div>
+
+        <!-- Usability -->
+        <div class="card">
+          <div class="card-title"><span class="icon">👤</span> 2. Usability (Khả Năng Sử Dụng)</div>
+          <p style="font-size: 11px; color: #475569; margin-bottom: 4px;">Mức độ dễ dàng, thuận tiện và trực quan để người dùng hoàn thành mục tiêu tác vụ, cùng các cơ chế trợ giúp người dùng của hệ thống.</p>
+          <ul class="point-list">
+            <li><strong>Tactics Cốt Lõi Theo Giáo Trình SEI:</strong><br>
+              • <em>Maintain Task Model:</em> Hệ thống hiểu ngữ cảnh người dùng đang làm gì để chủ động hỗ trợ (gợi ý tìm kiếm Type-ahead, tự động điền form, tự sửa lỗi chính tả).<br>
+              • <em>Maintain User Model:</em> Lưu trữ thói quen, quyền hạn, lịch sử và tùy biến giao diện cá nhân hóa theo từng người dùng.<br>
+              • <em>Maintain System Model:</em> Cung cấp phản hồi trạng thái minh bạch cho người dùng (Thanh tiến trình upload, thông báo lỗi dễ hiểu, khả năng Undo/Redo).
+            </li>
+            <li><strong>Chỉ số đo lường:</strong> Task completion time (thời gian làm xong tác vụ), Error rate của người dùng, Điểm khảo sát chuẩn SUS (System Usability Scale).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="background: #ffffff;">
+        <div class="card-title"><span class="icon">💡</span> Tác Động Của Kiến Trúc Đến Usability (Không Chỉ Là Thiết Kế UI/UX)</div>
+        <p style="font-size: 11px; color: #334155; line-height: 1.45;">
+          Usability không đơn thuần là thẩm mỹ đồ họa CSS mà bắt nguồn từ các quyết định kiến trúc nền tảng: Kiến trúc phải cung cấp tính năng <strong>Hủy tác vụ (Cancel)</strong> khi request đang xử lý dở dang; tính năng <strong>Hoàn tác (Undo)</strong> đòi hỏi kiến trúc phải lưu trữ Command Pattern hoặc Memento Pattern; và tính năng phản hồi trạng thái đòi hỏi kết nối thời gian thực <strong>Websocket / Server-Sent Events</strong> từ backend.
+        </p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 9 / 10</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 10: ARCHITECTURAL TRADE-OFFS ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-title-wrap">
+        <span class="slide-num">09</span>
+        <h2 class="slide-title">Ma Trận Đánh Đổi Kiến Trúc (Architectural Trade-offs)</h2>
+      </div>
+      <span class="slide-badge badge-matrix">Tổng hợp &amp; Vấn đáp</span>
+    </div>
+    <div class="slide-body">
+      <div class="lead-box">
+        <strong>Chân lý kiến trúc phần mềm:</strong> Không tồn tại một kiến trúc "hoàn hảo" cho mọi thuộc tính chất lượng. Việc tối ưu hóa một thuộc tính chất lượng này hầu như luôn dẫn đến sự suy giảm của một hoặc nhiều thuộc tính chất lượng khác.
+      </div>
+
+      <table class="data-table" style="font-size: 11px;">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Cặp Đánh Đổi Cốt Lõi</th>
+            <th style="width: 38%;">Bản Chất Mâu Thuẫn Kiến Trúc</th>
+            <th style="width: 40%;">Chiến Lược Cân Bằng Thực Tế (Tactics)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Scalability vs. Consistency<br>(Định lý CAP)</strong></td>
+            <td>Khi scale-out dữ liệu sang hàng chục node phân tán để chịu tải cao, việc bắt buộc tất cả node phải đồng bộ dữ liệu tức thời (Strong Consistency) sẽ làm nghẽn mạng và sụt giảm nghiêm trọng Availability.</td>
+            <td>Chấp nhận mô hình <strong>Eventual Consistency</strong> (Nhất quán cuối cùng). Áp dụng <em>Saga Pattern</em> hoặc Outbox Pattern với Message Queue thay cho Distributed Two-Phase Commit (2PC).</td>
+          </tr>
+          <tr>
+            <td><strong>Security vs. Performance</strong></td>
+            <td>Việc áp dụng mã hóa toàn diện (mTLS), phân tích chữ ký số, giải mã payload và kiểm tra token trên từng request sẽ tiêu tốn chu kỳ CPU và tăng độ trễ mạng (Network Latency).</td>
+            <td>Dùng Hardware Crypto Acceleration (TLS offloading tại API Gateway), Cache token xác thực phía Gateway, chỉ áp dụng mTLS nội bộ cho luồng dữ liệu tài chính cực kỳ nhạy cảm.</td>
+          </tr>
+          <tr>
+            <td><strong>Performance vs. Modifiability</strong></td>
+            <td>Tối ưu hiệu năng cực đoan bằng cách gộp chung module, viết code bậc thấp, chia sẻ trực tiếp bộ nhớ hoặc nhúng cache đa tầng khiến code phức tạp, gắn kết chặt chẽ và rất khó sửa đổi.</td>
+            <td>Áp dụng Clean Architecture / Microservices phân tách ranh giới rõ ràng. Chỉ tối ưu cục bộ tại đúng <strong>điểm nghẽn cổ chai (Bottleneck)</strong> sau khi có kết quả Profiling thực tế.</td>
+          </tr>
+          <tr>
+            <td><strong>Availability vs. Financial Cost</strong></td>
+            <td>Để đạt mức sẵn sàng "năm số 9" (99.999% - chỉ được phép downtime 5 phút/năm), hệ thống bắt buộc phải nhân bản toàn bộ hạ tầng Active-Active trên nhiều Data Center khác nhau, chi phí đội lên gấp nhiều lần.</td>
+            <td>Xác định rõ SLA/SLO theo giá trị nghiệp vụ: Chấp nhận 99.9% ("ba số 9") cho các dịch vụ phụ (gợi ý sản phẩm, giỏ hàng), chỉ đầu tư 99.99% cho luồng thanh toán cốt lõi.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="card" style="background: #f8fafc; border: 1px dashed #2563eb; padding: 8px 12px;">
+        <div class="card-title" style="color: #2563eb; font-size: 11.5px;"><span class="icon">🎓</span> THÔNG ĐIỆP KẾT LUẬN VẤN ĐÁP:</div>
+        <p style="font-size: 11px; color: #1e293b; line-height: 1.45;">
+          "Mục tiêu của người kiến trúc sư phần mềm không phải là xây dựng một hệ thống tối đa hóa tất cả các chỉ số chất lượng, mà là <strong>nhận diện chính xác mục tiêu nghiệp vụ tối thượng của hệ thống</strong>, từ đó đưa ra các quyết định đánh đổi kiến trúc (Trade-offs) có cơ sở khoa học và định lượng được bằng kịch bản kiểm thử."
+        </p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Kiến trúc Phần mềm - FIT HCMUS</span>
+      <span>Trang 10 / 10</span>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+================================================================================
+          HƯỚNG DẪN TỪNG BƯỚC DEMO SCALABILITY (ONLINE BOUTIQUE)
+================================================================================
+
+MỤC TIÊU DEMO:
+Chứng minh chất lượng phần mềm "Scalability" (Khả năng mở rộng ngang):
+Cùng cố định một mức tải nặng (350 requests/giây trong 20 giây = 7,000 requests)
+vào cùng một microservice (frontend):
+- Khi chạy 1 Replica: Hệ thống quá tải, nghẽn hàng đợi, thất bại ~95%.
+- Khi Scale lên 3 Replicas: Hệ thống phân phối tải qua Nginx, thành công ~99.8%.
+
+--------------------------------------------------------------------------------
+CHUẨN BỊ TRƯỚC KHI BẮT ĐẦU:
+1. Mở ứng dụng Docker Desktop trên máy và đảm bảo Docker đang chạy (Running).
+2. Mở một cửa sổ Terminal (khuyến nghị dùng PowerShell hoặc Command Prompt - CMD).
+3. Di chuyển vào thư mục microservices-demo:
+
+   cd "C:\Users\Duy Anh\Desktop\KTPM\microservices-demo"
+
+--------------------------------------------------------------------------------
+BƯỚC 1: KHỞI ĐỘNG HỆ THỐNG VỚI 1 REPLICA (BASELINE)
+--------------------------------------------------------------------------------
+1. Chạy lệnh:
+   docker compose up -d --scale frontend=1
+   docker compose restart loadbalancer
+
+2. Mở trình duyệt kiểm tra:
+   Truy cập: http://localhost:8080/
+   Nếu thấy trang web Online Boutique hiển thị bình thường là hệ thống đã sẵn sàng.
+
+--------------------------------------------------------------------------------
+BƯỚC 2: CHẠY KIỂM THỬ K6 LẦN 1 (ĐO NGHẼN TẢI TRÊN 1 REPLICA)
+--------------------------------------------------------------------------------
+1. Chạy lệnh:
+
+   * Nếu dùng PowerShell:
+     docker run --rm --network microservices-demo_default -v "${PWD}:/scripts" grafana/k6 run /scripts/load-test.js
+
+   * Nếu dùng CMD:
+     docker run --rm --network microservices-demo_default -v "%cd%:/scripts" grafana/k6 run /scripts/load-test.js
+
+2. Trong lúc chạy (20 giây):
+   - Màn hình sẽ liên tục báo lỗi màu vàng/đỏ: "Request Failed: request timeout".
+   - Đây là dấu hiệu server đang bị nghẽn.
+
+3. CÁCH ĐỌC BÁO CÁO K6 TRÊN MÀN HÌNH SAU KHI TEST XONG:
+   Nhìn vào khối [TOTAL RESULTS] ở cuối:
+   - Dòng "checks_succeeded": chỉ đạt khoảng ~4.2% (thất bại nghiêm trọng).
+   - Dòng "http_req_failed": báo khoảng ~95.7% (gần như toàn bộ request bị quá giờ 1.5s).
+   - Dòng "dropped_iterations": hơn 1,600 request bị drop do không đủ sức xử lý.
+   - Dòng THRESHOLDS: Bị đánh dấu chéo đỏ [✗] (Failed SLA).
+
+--------------------------------------------------------------------------------
+BƯỚC 3: SCALE LÊN 3 REPLICAS (MỞ RỘNG KIẾN TRÚC NGANG)
+--------------------------------------------------------------------------------
+1. Chạy lệnh scale frontend từ 1 lên 3:
+   docker compose up -d --scale frontend=3
+
+2. Khởi động lại load balancer để nhận diện 3 container mới:
+   docker compose restart loadbalancer
+
+--------------------------------------------------------------------------------
+BƯỚC 4: CHẠY LẠI KIỂM THỬ K6 LẦN 2 (ĐO NĂNG LỰC TRÊN 3 REPLICAS)
+--------------------------------------------------------------------------------
+1. Chạy lại chính xác cùng một lệnh test k6:
+
+   * Nếu dùng PowerShell:
+     docker run --rm --network microservices-demo_default -v "${PWD}:/scripts" grafana/k6 run /scripts/load-test.js
+
+   * Nếu dùng CMD:
+     docker run --rm --network microservices-demo_default -v "%cd%:/scripts" grafana/k6 run /scripts/load-test.js
+
+2. Trong lúc chạy:
+   - Màn hình chạy mượt mà, không còn tràn ngập lỗi timeout như lần 1.
+
+3. CÁCH ĐỌC BÁO CÁO K6 TRÊN MÀN HÌNH SAU KHI TEST XONG:
+   Nhìn vào khối [TOTAL RESULTS] ở cuối:
+   - Dòng "checks_succeeded": đạt ~99.8% (thành công gần như tuyệt đối, 6,494 request).
+   - Dòng "http_req_failed": giảm còn ~0.18% (hầu như không có lỗi).
+   - Dòng "http_req_duration p(95)": ~1.33s (nhỏ hơn ngưỡng 1.5s).
+   - Dòng THRESHOLDS: Đều đạt dấu tích xanh [✓] (Passed SLA).
+
+--------------------------------------------------------------------------------
+BƯỚC 5: BẢNG SỐ LIỆU ĐỐI CHIẾU TRẢ LỜI VẤN ĐÁP
+--------------------------------------------------------------------------------
+Mở bảng này đọc trực tiếp cho Giảng viên:
+
++----------------------------+---------------------+---------------------+
+| Chỉ số (Metric)            | 1 Replica (Trước)   | 3 Replicas (Sau)    |
++----------------------------+---------------------+---------------------+
+| Mức tải thử nghiệm         | 350 req/s trong 20s | 350 req/s trong 20s |
+| Tỉ lệ thành công (Success) | 4.28% (228 req)     | 99.81% (6,494 req)  |
+| Tỉ lệ thất bại (Failed)    | 95.71% (5,089 req)  | 0.18% (12 req)      |
+| Throughput thành công      | ~11 req/giây        | ~293 req/giây       |
+| Trạng thái đạt SLA         | ✗ FAILED            | ✓ PASSED            |
++----------------------------+---------------------+---------------------+
+
+CÂU GIẢI THÍCH CHỐT VỚI THẦY/CÔ (15 GIÂY):
+"Dạ thưa thầy, microservice frontend được cấu hình giới hạn 0.25 CPU.
+Khi tải 350 req/s, 1 replica bị nghẽn hàng đợi dẫn đến 95.7% request bị timeout.
+Khi áp dụng Tactic Scale-out nhân bản lên 3 replicas sau Nginx Load Balancer,
+tải được chia đều 1/3 cho mỗi instance, đưa tỉ lệ thành công lên 99.8% mà không cần
+sửa đổi bất kỳ dòng code nào."
+
+--------------------------------------------------------------------------------
+BƯỚC 6: DỌN DẸP SAU KHI DEMO XONG
+--------------------------------------------------------------------------------
+Khi kết thúc buổi vấn đáp, chạy lệnh sau để tắt hệ thống và giải phóng RAM:
+
+   docker compose down
+================================================================================
